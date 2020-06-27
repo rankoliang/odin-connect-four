@@ -2,7 +2,51 @@
 
 require_relative '../lib/connect_four'
 
-describe ConnectFourBoard do
+RSpec.describe ConnectFourBoard do
+  describe '#size' do
+    subject(:board) { described_class.new }
+
+    it { expect(board.size).to eq [7, 6] }
+
+    it { expect(board.size).not_to eq [6, 7] }
+  end
+
+  describe '.indices' do
+    subject(:indices) { described_class.indices(index, query) }
+
+    RSpec.shared_examples 'queries' do |example_parameters|
+      example_parameters.each do |index, expected_indices|
+        context "when index is #{index}" do
+          let(:index) { index }
+
+          it { is_expected.to eq expected_indices }
+        end
+      end
+    end
+
+    context 'when ul is queried' do
+      let(:query) { 'ul' }
+
+      include_examples 'queries',
+                       {
+                         5 => [[0, 2], [1, 3], [2, 4], [3, 5]],
+                         2 => [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5]],
+                         6 => nil
+                       }
+    end
+
+    context 'when ur is queried' do
+      let(:query) { 'ur' }
+
+      include_examples 'queries',
+                       {
+                         4 => [[6, 1], [5, 2], [4, 3], [3, 4], [2, 5]],
+                         2 => [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
+                         -1 => nil
+                       }
+    end
+  end
+
   describe '.array_winner' do
     subject(:winner) { described_class.array_winner(arr) }
 
