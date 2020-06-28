@@ -11,6 +11,81 @@ RSpec.describe ConnectFourBoard do
     it { expect(board.size).not_to eq [6, 7] }
   end
 
+  describe '#index_arr' do
+    subject(:arr) { connect_four_board.index_arr(query, index) }
+
+    let(:connect_four_board) { described_class.new }
+
+    before do
+      allow(connect_four_board).to receive(:grid).and_return(
+        [
+          [1,  2,  3,  4,  5,  6,  7],
+          [8,  9,  10, 11, 12, 13, 14],
+          [15, 16, 17, 18, 19, 20, 21],
+          [22, 23, 24, 25, 26, 27, 28],
+          [29, 30, 31, 32, 33, 34, 35],
+          [36, 37, 38, 39, 40, 41, 42]
+        ]
+      )
+    end
+
+    RSpec.shared_examples 'verify array' do |example_parameters|
+      example_parameters.each do |index, expected_arrs|
+        context "when index is #{index}" do
+          let(:index) { index }
+
+          it { is_expected.to eq expected_arrs }
+        end
+      end
+    end
+
+    context 'when ul is queried' do
+      let(:query) { 'ul' }
+
+      include_examples 'verify array',
+                       {
+                         5 => [15, 23, 31, 39],
+                         2 => [2, 10, 18, 26, 34, 42],
+                         6 => nil
+                       }
+    end
+
+    context 'when ur is queried' do
+      let(:query) { 'ur' }
+
+      include_examples 'verify array',
+                       {
+                         4 => [14, 20, 26, 32, 38],
+                         2 => [6, 12, 18, 24, 30, 36],
+                         -1 => nil
+                       }
+    end
+
+    context 'when row is queried' do
+      let(:query) { 'row' }
+
+      include_examples 'verify array',
+                       {
+                         2 => [15, 16, 17, 18, 19, 20, 21],
+                         5 => [36, 37, 38, 39, 40, 41, 42],
+                         -1 => nil,
+                         6 => nil
+                       }
+    end
+
+    context 'when column is queried' do
+      let(:query) { 'column' }
+
+      include_examples 'verify array',
+                       {
+                         0 => [1, 8, 15, 22, 29, 36],
+                         5 => [6, 13, 20, 27, 34, 41],
+                         7 => nil,
+                         -1 => nil
+                       }
+    end
+  end
+
   describe '.indices' do
     subject(:indices) { described_class.indices(query, index) }
 

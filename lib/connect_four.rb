@@ -12,6 +12,16 @@ class ConnectFourBoard
     [grid[0].size, grid.size]
   end
 
+  def index_arr(query, index)
+    indices = self.class.indices(query, index)
+    return if indices.nil?
+
+    indices.map { |x, y| grid[y][x] }
+  end
+
+  # returns indices ordered by x ascending, then y ascending
+  # returns an array of of coordinates [x, y]. The top left corner is [0, 0]
+  # and the x, y values increase going down and to the right.
   def self.indices(query, index, width = 7, height = 6)
     indices = []
     return unless %w[ul ur row column].include?(query) && index >= 0
