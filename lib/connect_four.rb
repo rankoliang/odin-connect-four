@@ -2,17 +2,17 @@
 
 # connect_four_board
 class ConnectFourBoard
-  attr_accessor :board
+  attr_reader :grid
 
   def initialize(width = 7, height = 6)
-    self.board = Array.new(height) { Array.new(width) }
+    @grid = Array.new(height) { Array.new(width) }
   end
 
   def size
-    [board[0].size, board.size]
+    [grid[0].size, grid.size]
   end
 
-  def self.indices(index, query, width = 7, height = 6)
+  def self.indices(query, index, width = 7, height = 6)
     indices = []
     return unless %w[ul ur row column].include?(query) && index >= 0
 
@@ -70,9 +70,9 @@ class ConnectFourBoard
       when 'ur'
         [x_coord - 1, y_coord + 1]
       when 'row'
-        [x_coord, y_coord + 1]
-      when 'column'
         [x_coord + 1, y_coord]
+      when 'column'
+        [x_coord, y_coord + 1]
       end
     end
 

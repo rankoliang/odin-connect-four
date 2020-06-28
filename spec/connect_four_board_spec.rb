@@ -12,7 +12,7 @@ RSpec.describe ConnectFourBoard do
   end
 
   describe '.indices' do
-    subject(:indices) { described_class.indices(index, query) }
+    subject(:indices) { described_class.indices(query, index) }
 
     RSpec.shared_examples 'queries' do |example_parameters|
       example_parameters.each do |index, expected_indices|
@@ -43,6 +43,28 @@ RSpec.describe ConnectFourBoard do
                          4 => [[6, 1], [5, 2], [4, 3], [3, 4], [2, 5]],
                          2 => [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
                          -1 => nil
+                       }
+    end
+
+    context 'when row is queried' do
+      let(:query) { 'row' }
+
+      include_examples 'queries',
+                       {
+                         0 => [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]],
+                         2 => [[0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2]],
+                         8 => nil
+                       }
+    end
+
+    context 'when column is queried' do
+      let(:query) { 'column' }
+
+      include_examples 'queries',
+                       {
+                         0 => [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5]],
+                         2 => [[2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5]],
+                         8 => nil
                        }
     end
   end
