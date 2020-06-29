@@ -21,6 +21,18 @@ class Board
     indices.map { |x, y| grid[y][x] }
   end
 
+  def to_a
+    grid
+  end
+
+  def to_ary
+    grid
+  end
+
+  def [](row_index)
+    grid[row_index]
+  end
+
   # returns indices ordered by x ascending, then y ascending
   # returns an array of of coordinates [x, y]. The top left corner is [0, 0]
   # and the x, y values increase going down and to the right.

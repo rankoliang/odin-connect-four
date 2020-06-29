@@ -39,6 +39,48 @@ RSpec.describe Board do
     end
   end
 
+  describe '#to_ary' do
+    let(:board) { described_class.new }
+
+    before do
+      allow(board).to receive(:grid).and_return(
+        [
+          [1,  2,  3,  4,  5,  6,  7],
+          [8,  9,  10, 11, 12, 13, 14],
+          [15, 16, 17, 18, 19, 20, 21],
+          [22, 23, 24, 25, 26, 27, 28],
+          [29, 30, 31, 32, 33, 34, 35],
+          [36, 37, 38, 39, 40, 41, 42]
+        ]
+      )
+    end
+
+    it { expect(board.to_a).to match_array board.grid }
+    it { expect(board.to_ary).to match_array board.grid }
+  end
+
+  describe '#[]' do
+    let(:board) { described_class.new }
+
+    before do
+      allow(board).to receive(:grid).and_return(
+        [
+          [1,  2,  3,  4,  5,  6,  7],
+          [8,  9,  10, 11, 12, 13, 14],
+          [15, 16, 17, 18, 19, 20, 21],
+          [22, 23, 24, 25, 26, 27, 28],
+          [29, 30, 31, 32, 33, 34, 35],
+          [36, 37, 38, 39, 40, 41, 42]
+        ]
+      )
+    end
+
+    it { expect(board[0]).to eq board.grid[0] }
+    it { expect(board[0]).not_to eq board.grid[1] }
+    it { expect(board[0][4]).to eq board.grid[0][4] }
+    it { expect(board[7]).to be_nil }
+  end
+
   describe '#index_arr' do
     subject(:arr) { board.index_arr(query, index) }
 
