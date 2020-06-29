@@ -14,15 +14,11 @@ class Board
     [grid[0].size, grid.size]
   end
 
-  def index_arr(query, index)
-    indices = self.class.indices(query, index)
+  def index_arr(orientation, index)
+    indices = self.class.indices(orientation, index)
     return if indices.nil?
 
     indices.map { |x, y| grid[y][x] }
-  end
-
-  def to_a
-    grid
   end
 
   def to_ary
@@ -36,14 +32,14 @@ class Board
   # returns indices ordered by x ascending, then y ascending
   # returns an array of of coordinates [x, y]. The top left corner is [0, 0]
   # and the x, y values increase going down and to the right.
-  def self.indices(query, index, board_width = 7, board_height = 6)
+  def self.indices(orientation, index, board_width = 7, board_height = 6)
     indices = []
-    return unless %w[ul ur row column].include?(query) && index >= 0
+    return unless %w[ul ur row column].include?(orientation) && index >= 0
 
-    x, y = initial_indices(query, index)
+    x, y = initial_indices(orientation, index)
     while x < board_width && y < board_height
       indices.push([x, y])
-      x, y = index_coord_step(query, x, y)
+      x, y = index_coord_step(orientation, x, y)
     end
     indices if indices.size >= 4
   end
@@ -66,19 +62,19 @@ class Board
   # direction is where the diagonal is leaving the board
   # ul : up-left
   # ur : up-right
-  def self.diagonal_index(x_location, y_location)
-    ul = 3 + y_location - x_location
+  def self.diagonal_index(column_index, row_index)
+    ul = 3 + row_index - column_index
     ul = ul >= 0 ? ul : nil
-    ur = 3 - y_location - x_location
+    ur = 3 - row_index - column_index
     ur = ur <= 0 ? ur * -1 : nil
     { ul: ul, ur: ur }
   end
 
-  def populate_grid(element, x_location, y_location)
+  def populate_grid(element, column_index, row_index)
     # returns false if failed
-    return false unless x_location.between?(0, width - 1) && y_location.between?(0, height - 1)
+    return false unless column_index.between?(0, width - 1) && row_index.between?(0, height - 1)
 
-    grid[y_location][x_location] = element
+    grid[row_index][column_index] = element
     # returns true if succeeded
     true
   end
@@ -96,26 +92,26 @@ class Board
       end
     end
 
-    def index_coord_step(query, x_coord, y_coord)
-      case query
+    def index_coord_step(orientation, column_index, row_index)
+      case orientation
       when 'ul'
-        [x_coord + 1, y_coord + 1]
+        [column_index + 1, row_index + 1]
       when 'ur'
-        [x_coord - 1, y_coord + 1]
+        [column_index - 1, row_index + 1]
       when 'row'
-        [x_coord + 1, y_coord]
+        [column_index + 1, row_index]
       when 'column'
-        [x_coord, y_coord + 1]
+        [column_index, row_index + 1]
       end
     end
 
-    def initial_indices(query, index, board_width = 6)
-      return [index, 0] if query == 'column'
-      return [0, index] if query == 'row'
+    def initial_indices(orientation, index, board_width = 6)
+      return [index, 0] if orientation == 'column'
+      return [0, index] if orientation == 'row'
 
-      x = [0, -index + 3].max if query == 'ul'
-      x = [board_width, index + 3].min if query == 'ur'
-      y = [0, index - 3].max if %w[ul ur].include? query
+      x = [0, -index + 3].max if orientation == 'ul'
+      x = [board_width, index + 3].min if orientation == 'ur'
+      y = [0, index - 3].max if %w[ul ur].include? orientation
       [x, y]
     end
   end

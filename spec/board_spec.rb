@@ -55,7 +55,6 @@ RSpec.describe Board do
       )
     end
 
-    it { expect(board.to_a).to match_array board.grid }
     it { expect(board.to_ary).to match_array board.grid }
   end
 
@@ -82,7 +81,7 @@ RSpec.describe Board do
   end
 
   describe '#index_arr' do
-    subject(:arr) { board.index_arr(query, index) }
+    subject(:arr) { board.index_arr(orientation, index) }
 
     let(:board) { described_class.new }
 
@@ -114,7 +113,7 @@ RSpec.describe Board do
     end
 
     context 'when ul is queried' do
-      let(:query) { 'ul' }
+      let(:orientation) { 'ul' }
 
       include_examples 'verify array',
                        {
@@ -125,7 +124,7 @@ RSpec.describe Board do
     end
 
     context 'when ur is queried' do
-      let(:query) { 'ur' }
+      let(:orientation) { 'ur' }
 
       include_examples 'verify array',
                        {
@@ -136,7 +135,7 @@ RSpec.describe Board do
     end
 
     context 'when row is queried' do
-      let(:query) { 'row' }
+      let(:orientation) { 'row' }
 
       include_examples 'verify array',
                        {
@@ -148,7 +147,7 @@ RSpec.describe Board do
     end
 
     context 'when column is queried' do
-      let(:query) { 'column' }
+      let(:orientation) { 'column' }
 
       include_examples 'verify array',
                        {
@@ -161,7 +160,7 @@ RSpec.describe Board do
   end
 
   describe '.indices' do
-    subject(:indices) { described_class.indices(query, index) }
+    subject(:indices) { described_class.indices(orientation, index) }
 
     RSpec.shared_examples 'queries' do |example_parameters|
       example_parameters.each do |index, expected_indices|
@@ -174,7 +173,7 @@ RSpec.describe Board do
     end
 
     context 'when ul is queried' do
-      let(:query) { 'ul' }
+      let(:orientation) { 'ul' }
 
       include_examples 'queries',
                        {
@@ -185,7 +184,7 @@ RSpec.describe Board do
     end
 
     context 'when ur is queried' do
-      let(:query) { 'ur' }
+      let(:orientation) { 'ur' }
 
       include_examples 'queries',
                        {
@@ -196,7 +195,7 @@ RSpec.describe Board do
     end
 
     context 'when row is queried' do
-      let(:query) { 'row' }
+      let(:orientation) { 'row' }
 
       include_examples 'queries',
                        {
@@ -207,7 +206,7 @@ RSpec.describe Board do
     end
 
     context 'when column is queried' do
-      let(:query) { 'column' }
+      let(:orientation) { 'column' }
 
       include_examples 'queries',
                        {
