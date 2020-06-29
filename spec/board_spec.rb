@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative '../lib/connect_four'
+require_relative '../lib/board'
 
-RSpec.describe ConnectFourBoard do
+RSpec.describe Board do
   describe '#size' do
     subject(:board) { described_class.new }
 
@@ -11,13 +11,41 @@ RSpec.describe ConnectFourBoard do
     it { expect(board.size).not_to eq [6, 7] }
   end
 
-  describe '#index_arr' do
-    subject(:arr) { connect_four_board.index_arr(query, index) }
+  describe '#populate_grid' do
+    subject(:board) { described_class.new }
 
-    let(:connect_four_board) { described_class.new }
+    context 'when coordinates are valid' do
+      let!(:success) { board.populate_grid(1, 6, 5) }
+
+      it 'adds an element to the grid' do
+        expect(board.grid[5][6]).to eq(1)
+      end
+
+      it 'returns true' do
+        expect(success).to be true
+      end
+    end
+
+    context 'when x coordinates are not valid' do
+      it {  expect(board.populate_grid(1, 7, 0)).to be false }
+    end
+
+    context 'when y coordinates are not valid' do
+      it { expect(board.populate_grid(1, 0, 6)).to be false }
+    end
+
+    context 'when x and y coordinates are not valid' do
+      it { expect(board.populate_grid(1, 7, 6)).to be false }
+    end
+  end
+
+  describe '#index_arr' do
+    subject(:arr) { board.index_arr(query, index) }
+
+    let(:board) { described_class.new }
 
     before do
-      allow(connect_four_board).to receive(:grid).and_return(
+      allow(board).to receive(:grid).and_return(
         [
           [1,  2,  3,  4,  5,  6,  7],
           [8,  9,  10, 11, 12, 13, 14],
@@ -30,11 +58,15 @@ RSpec.describe ConnectFourBoard do
     end
 
     RSpec.shared_examples 'verify array' do |example_parameters|
-      example_parameters.each do |index, expected_arrs|
+      example_parameters.each do |index, expected_arr|
         context "when index is #{index}" do
           let(:index) { index }
 
-          it { is_expected.to eq expected_arrs }
+          if expected_arr.nil?
+            it { is_expected.to be_nil }
+          else
+            it { is_expected.to match_array expected_arr }
+          end
         end
       end
     end

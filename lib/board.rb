@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-# connect_four_board
-class ConnectFourBoard
-  attr_reader :grid
+# contains the grid used to play connect four
+class Board
+  attr_reader :grid, :width, :height
 
   def initialize(width = 7, height = 6)
+    @width = width
+    @height = height
     @grid = Array.new(height) { Array.new(width) }
   end
 
@@ -22,12 +24,12 @@ class ConnectFourBoard
   # returns indices ordered by x ascending, then y ascending
   # returns an array of of coordinates [x, y]. The top left corner is [0, 0]
   # and the x, y values increase going down and to the right.
-  def self.indices(query, index, width = 7, height = 6)
+  def self.indices(query, index, board_width = 7, board_height = 6)
     indices = []
     return unless %w[ul ur row column].include?(query) && index >= 0
 
     x, y = initial_indices(query, index)
-    while x < width && y < height
+    while x < board_width && y < board_height
       indices.push([x, y])
       x, y = index_coord_step(query, x, y)
     end
@@ -60,6 +62,15 @@ class ConnectFourBoard
     { ul: ul, ur: ur }
   end
 
+  def populate_grid(element, x_location, y_location)
+    # returns false if failed
+    return false unless x_location.between?(0, width - 1) && y_location.between?(0, height - 1)
+
+    grid[y_location][x_location] = element
+    # returns true if succeeded
+    true
+  end
+
   class << self
     private
 
@@ -86,12 +97,12 @@ class ConnectFourBoard
       end
     end
 
-    def initial_indices(query, index)
+    def initial_indices(query, index, board_width = 6)
       return [index, 0] if query == 'column'
       return [0, index] if query == 'row'
 
       x = [0, -index + 3].max if query == 'ul'
-      x = [6, index + 3].min if query == 'ur'
+      x = [board_width, index + 3].min if query == 'ur'
       y = [0, index - 3].max if %w[ul ur].include? query
       [x, y]
     end
