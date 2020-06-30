@@ -55,7 +55,7 @@ RSpec.describe Board do
       )
     end
 
-    it { expect(board.to_ary).to match_array board.grid }
+    it { expect(board.to_ary).to eq board.grid }
   end
 
   describe '#[]' do
@@ -106,7 +106,7 @@ RSpec.describe Board do
           if expected_arr.nil?
             it { is_expected.to be_nil }
           else
-            it { is_expected.to match_array expected_arr }
+            it { is_expected.to eq expected_arr }
           end
         end
       end
@@ -263,6 +263,36 @@ RSpec.describe Board do
 
         it { is_expected.to eq({ ul: ul, ur: ur }) }
       end
+    end
+  end
+
+  describe '#show_grid' do
+    subject(:board) { described_class.new }
+
+    before { board.show_grid }
+
+    it { expect { board.show_grid }.to output.to_stdout }
+  end
+
+  describe '.display_character' do
+    subject(:character) { described_class.display_character(grid_content) }
+
+    context 'when content is nil' do
+      let(:grid_content) { nil }
+
+      it { is_expected.to eq '_' }
+    end
+
+    context 'when content is odd' do
+      let(:grid_content) { 1 }
+
+      it { is_expected.to eq '◯' }
+    end
+
+    context 'when content is even' do
+      let(:grid_content) { 2 }
+
+      it { is_expected.to eq '◉' }
     end
   end
 end

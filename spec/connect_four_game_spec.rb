@@ -13,8 +13,8 @@ RSpec.describe ConnectFourGame do
     end
 
     it { expect(game.board).not_to be_nil }
-    it { expect(game.board).to match_array Array.new(6) { Array.new(7) } }
-    it { expect(game.board.size).to match_array [6, 7] }
+    it { expect(game.board.grid).to eq Array.new(6) { Array.new(7) } }
+    it { expect(game.board.size).to eq [7, 6] }
     it { expect(game.players.size).to eq 2 }
   end
 
@@ -36,11 +36,11 @@ RSpec.describe ConnectFourGame do
         let!(:piece_index) { game.play_piece(column_index, player_number) }
 
         it do
-          expect(piece_index).to match_array([column_index, expected_row])
+          expect(piece_index).to eq([column_index, expected_row])
         end
 
         it do
-          expect(board.grid).to match_array(expected_grid)
+          expect(board.grid).to eq(expected_grid)
         end
       end
     end
@@ -50,14 +50,15 @@ RSpec.describe ConnectFourGame do
         let!(:piece_index) { game.play_piece(column_index, player_number) }
 
         it { expect(piece_index).to be_nil }
-        it { expect(board.grid).to match_array(expected_grid) }
+        it { expect(board.grid).to eq(expected_grid) }
       end
     end
 
     RSpec.shared_examples 'full column' do |column_index|
       context 'when a piece is played in a full column' do
         it 'raises a NoSpaceError' do
-          expect { game.play_piece(column_index, player_number) }.to raise_error NoSpaceError
+          expect { game.play_piece(column_index, player_number) }
+            .to raise_error(NoSpaceError, 'There is no space left in the column')
         end
       end
     end
@@ -131,49 +132,49 @@ RSpec.describe ConnectFourGame do
       let(:column_index) { 1 }
       let(:row_index) { 3 }
 
-      it { is_expected.to be_truthy }
+      it { expect { winner } .to throw_symbol(:winner) }
     end
 
     context 'when there is no winner' do
       let(:column_index) { 0 }
       let(:row_index) { 6 }
 
-      it { is_expected.to be_falsy }
+      it { expect { winner } .not_to throw_symbol(:winner) }
     end
 
     context 'when the winning orientation is a column' do
       let(:column_index) { 4 }
       let(:row_index) { 5 }
 
-      it { is_expected.to be_truthy }
+      it { expect { winner } .to throw_symbol(:winner) }
     end
 
     context 'when the winning orientation is a row' do
       let(:column_index) { 2 }
       let(:row_index) { 5 }
 
-      it { is_expected.to be_truthy }
+      it { expect { winner } .to throw_symbol(:winner) }
     end
 
     context 'when the winning orientation is a diagonal' do
       let(:column_index) { 0 }
       let(:row_index) { 4 }
 
-      it { is_expected.to be_truthy }
+      it { expect { winner } .to throw_symbol(:winner) }
     end
 
     context 'when the winner has symbol 1' do
       let(:column_index) { 0 }
       let(:row_index) { 4 }
 
-      it { is_expected.to eq 1 }
+      it { expect { winner } .to throw_symbol(:winner, 1) }
     end
 
     context 'when the winner has symbol 0' do
       let(:column_index) { 6 }
       let(:row_index) { 5 }
 
-      it { is_expected.to eq 0 }
+      it { expect { winner } .to throw_symbol(:winner, 0) }
     end
   end
 end

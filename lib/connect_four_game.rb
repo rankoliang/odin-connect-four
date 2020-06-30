@@ -20,15 +20,16 @@ class ConnectFourGame
     [column_index, row_index]
   end
 
+  # Throws :winner if found
   def check_winner(column_index, row_index)
-    indices = { 'row' => row_index, 'column' => column_index }
-              .merge(Board.diagonal_index(column_index, row_index))
+    indices = Board.diagonal_index(column_index, row_index)
+                   .merge({ 'row' => row_index, 'column' => column_index })
     indices.each do |orientation, index|
       arr = board.index_arr(orientation.to_s, index)
       next unless arr
 
       winner = Board.array_winner(arr)
-      return winner if winner
+      throw(:winner, winner) if winner
     end
     # winner not found
     nil
@@ -46,11 +47,11 @@ class ConnectFourGame
 
   def column_reversed_first_nil_row(column)
     # first nil row from the bottom
-    crfnr = column.reverse.find_index(&:nil?)
+    column_reversed_nil_row = column.reverse.find_index(&:nil?)
 
-    raise NoSpaceError if crfnr.nil? || !crfnr.between?(0, board.height - 1)
+    raise NoSpaceError, 'There is no space left in the column' if column_reversed_nil_row.nil?
 
-    crfnr
+    column_reversed_nil_row
   end
 end
 

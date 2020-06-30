@@ -3,6 +3,7 @@
 # contains the grid used to play connect four
 class Board
   attr_reader :grid, :width, :height
+  DISPLAY_CHARACTER_MAP = { default: '_', odd: '◯', even: '◉' }.freeze
 
   def initialize(width = 7, height = 6)
     @width = width
@@ -79,6 +80,21 @@ class Board
     true
   end
 
+  def show_grid
+    puts(' ' + (0..width - 1).to_a.join(' '))
+    grid.each do |row|
+      puts '┊' + row.map { |player| self.class.display_character(player) }.join('┊') + '┊'
+    end
+  end
+
+  # maps data in the grid to a display character
+  def self.display_character(grid_content)
+    if grid_content.is_a? Numeric
+      grid_content.odd? ? DISPLAY_CHARACTER_MAP[:odd] : DISPLAY_CHARACTER_MAP[:even]
+    else
+      DISPLAY_CHARACTER_MAP[:default]
+    end
+  end
   class << self
     private
 
