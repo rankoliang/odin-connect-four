@@ -25,7 +25,7 @@ class ConnectFourGame
     indices = Board.diagonal_index(column_index, row_index)
                    .merge({ 'row' => row_index, 'column' => column_index })
     indices.each do |orientation, index|
-      arr = board.index_arr(orientation.to_s, index)
+      arr = board.index_arr(orientation.to_s, index) if index
       next unless arr
 
       winner = Board.array_winner(arr)
@@ -49,6 +49,7 @@ class ConnectFourGame
     # first nil row from the bottom
     column_reversed_nil_row = column.reverse.find_index(&:nil?)
 
+    throw :board_full if board.grid.all? { |row| row.none?(&:nil?) }
     raise NoSpaceError, 'There is no space left in the column' if column_reversed_nil_row.nil?
 
     column_reversed_nil_row

@@ -6,6 +6,8 @@ RSpec.describe Player do
   describe '#name' do
     subject(:player) { described_class.new }
 
+    before { described_class.reset_player_count }
+
     after { described_class.reset_player_count }
 
     context 'when name is not set' do
